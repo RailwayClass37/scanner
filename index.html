@@ -48,15 +48,6 @@ button{
 .declined{
     color:red;
 }
-
-/* Hidden camera */
-#camera{
-    position:absolute;
-    width:1px;
-    height:1px;
-    opacity:0;
-    pointer-events:none;
-}
 </style>
 </head>
 
@@ -68,68 +59,26 @@ button{
 ⛶ Full Screen
 </button>
 
-<h1>Please scan your card</h1>
-
-<video id="camera" autoplay playsinline muted></video>
+<h1>Place card over camera</h1>
 
 <div id="status">
-Waiting for card...
+Ready to scan
 </div>
 
-<button onclick="scanAgain()">Scan Again</button>
+<button onclick="scanCard()">Scan</button>
 
 </div>
 
 <script>
 
-const video=document.getElementById("camera");
-const status=document.getElementById("status");
+function scanCard(){
 
-let scanning=true;
-let previousBrightness=0;
+    const status=document.getElementById("status");
 
-// Start FRONT camera
-navigator.mediaDevices.getUserMedia({
-    video:{
-        facingMode:"user"
-    },
-    audio:false
-})
-.then(stream=>{
-    video.srcObject=stream;
-})
-.catch(err=>{
-    status.innerHTML="Camera permission denied";
-    console.log(err);
-});
+    status.className="";
+    status.innerHTML="Scanning...";
 
-const canvas=document.createElement("canvas");
-const ctx=canvas.getContext("2d");
-
-setInterval(()=>{
-
-    if(!scanning) return;
-
-    if(video.readyState!==4) return;
-
-    canvas.width=160;
-    canvas.height=120;
-
-    ctx.drawImage(video,0,0,160,120);
-
-    const pixels=ctx.getImageData(0,0,160,120).data;
-
-    let total=0;
-
-    for(let i=0;i<pixels.length;i+=4){
-        total+=pixels[i]+pixels[i+1]+pixels[i+2];
-    }
-
-    const brightness=total/(pixels.length/4);
-
-    if(Math.abs(brightness-previousBrightness)>12){
-
-        scanning=false;
+    setTimeout(()=>{
 
         if(Math.random()<0.8){
 
@@ -143,19 +92,7 @@ setInterval(()=>{
 
         }
 
-    }
-
-    previousBrightness=brightness;
-
-},200);
-
-function scanAgain(){
-
-    scanning=true;
-    previousBrightness=0;
-
-    status.className="";
-    status.innerHTML="Waiting for card...";
+    },1500);
 
 }
 
