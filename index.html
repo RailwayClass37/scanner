@@ -71,7 +71,13 @@ Ready to scan
 
 <script>
 
+let scanning=false;
+
 function scanCard(){
+
+    if(scanning) return;
+
+    scanning=true;
 
     const status=document.getElementById("status");
 
@@ -91,6 +97,14 @@ function scanCard(){
             status.innerHTML="✖ CARD DECLINED";
 
         }
+
+        setTimeout(()=>{
+
+            status.className="";
+            status.innerHTML="Ready to scan";
+            scanning=false;
+
+        },3000);
 
     },1500);
 
